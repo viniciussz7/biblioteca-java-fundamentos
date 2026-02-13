@@ -1,5 +1,7 @@
 package br.com.vinicius.biblioteca.model;
 
+import br.com.vinicius.biblioteca.utils.IsbnUtils;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +15,7 @@ public final class Livro {
     private boolean disponivel;
 
     public Livro(String titulo, String autor, int anoPublicacao, String isbn) {
-        String isbnNormalizado = normalizarIsbn(isbn);
+        String isbnNormalizado = IsbnUtils.normalizar(isbn);
 
         validarTitulo(titulo);
         validarAutor(autor);
@@ -67,13 +69,6 @@ public final class Livro {
     private void validarAutor(String autor) {
         if (autor == null || autor.isBlank())
             throw new IllegalArgumentException("Autor do livro vazio ou nulo.");
-    }
-
-    private String normalizarIsbn(String isbn) {
-        if (isbn == null) {
-            throw new IllegalArgumentException("ISBN não pode ser nulo.");
-        }
-        return isbn.replaceAll("[^0-9]","");
     }
 
     private void validarIsbn(String isbn) {
