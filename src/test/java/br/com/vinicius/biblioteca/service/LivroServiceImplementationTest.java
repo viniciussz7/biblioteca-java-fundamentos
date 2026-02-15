@@ -1,6 +1,7 @@
 package br.com.vinicius.biblioteca.service;
 
 import br.com.vinicius.biblioteca.model.Livro;
+import br.com.vinicius.biblioteca.model.StatusLivro;
 import br.com.vinicius.biblioteca.repository.LivroRepositoryEmMemoria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -236,43 +237,43 @@ public class LivroServiceImplementationTest {
     }
 
     @Test
-    void deveMarcarLivroComoIndisponivelComSucesso() {
+    void deveEmprestarComSucesso() {
         livroServiceImplementation.cadastrarLivro(livroValido);
-        livroServiceImplementation.marcarComoIndisponivel("9780132350884");
+        livroServiceImplementation.emprestar("9780132350884");
         Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
-        assertFalse(livroAtualizado.isDisponivel());
+        assertEquals(StatusLivro.EMPRESTADO, livroAtualizado.getStatus());
     }
 
     @Test
-    void deveMarcarLivroComoDisponivelComSucesso() {
+    void deveDevolverComSucesso() {
         livroServiceImplementation.cadastrarLivro(livroValido);
-        livroServiceImplementation.marcarComoIndisponivel("9780132350884");
-        livroServiceImplementation.marcarComoDisponivel("9780132350884");
+        livroServiceImplementation.emprestar("9780132350884");
+        livroServiceImplementation.devolver("9780132350884");
         Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
-        assertTrue(livroAtualizado.isDisponivel());
+        assertEquals(StatusLivro.DISPONIVEL, livroAtualizado.getStatus());
     }
 
     @Test
-    void deveLancarExcecaoAoMarcarDisponivelQuandoJaDisponivel() {
+    void deveLancarExcecaoAoDevolverQuandoJaDisponivel() {
         livroServiceImplementation.cadastrarLivro(livroValido);
-        assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.marcarComoDisponivel("9780132350884");
+        assertThrows(IllegalStateException.class, () -> {
+           livroServiceImplementation.devolver("9780132350884");
         });
     }
 
     @Test
-    void deveLancarExcecaoAoMarcarIndisponivelQuandoJaIndisponivel() {
+    void deveLancarExcecaoAoEmprestarQuandoJaIndisponivel() {
         livroServiceImplementation.cadastrarLivro(livroValido);
-        livroServiceImplementation.marcarComoIndisponivel("9780132350884");
-        assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.marcarComoIndisponivel("9780132350884");
+        livroServiceImplementation.emprestar("9780132350884");
+        assertThrows(IllegalStateException.class, () -> {
+           livroServiceImplementation.emprestar("9780132350884");
         });
     }
 
     @Test
     void deveLancarExcecaoAoAlterarDisponibilidadeDeLivroInexistente() {
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.marcarComoIndisponivel("9780132350884");
+           livroServiceImplementation.emprestar("9780132350884");
         });
     }
 

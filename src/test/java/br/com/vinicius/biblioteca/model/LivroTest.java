@@ -28,7 +28,7 @@ public class LivroTest {
         assertEquals(autorValido, livro.getAutor());
         assertEquals(anoPublicacaoValido, livro.getAnoPublicacao());
         assertEquals("9780132350884", livro.getIsbn());
-        assertTrue(livro.isDisponivel());
+        assertEquals(StatusLivro.DISPONIVEL, livro.getStatus());
     }
 
     @Test
@@ -173,37 +173,38 @@ public class LivroTest {
     }
 
     @Test
-    void deveMarcarComoIndisponivelQuandoDisponivel() {
+    void deveEmprestarLivroQuandoDisponivel() {
         Livro livro = new Livro(tituloValido, autorValido, anoPublicacaoValido, isbnValido);
 
-        livro.marcarComoIndisponivel();
+        livro.emprestar();
 
-        assertFalse(livro.isDisponivel());
+        assertEquals(StatusLivro.EMPRESTADO, livro.getStatus());
     }
 
     @Test
-    void deveMarcarComoDisponivelQuandoIndisponivel() {
+    void deveDevolverLivroQuandoEmprestado() {
         Livro livro = new Livro(tituloValido, autorValido, anoPublicacaoValido, isbnValido);
 
-        livro.marcarComoIndisponivel();
-        livro.marcarComoDisponivel();
-        assertTrue(livro.isDisponivel());
+        livro.emprestar();
+        assertEquals(StatusLivro.EMPRESTADO, livro.getStatus());
+        livro.devolver();
+        assertEquals(StatusLivro.DISPONIVEL, livro.getStatus());
     }
 
     @Test
-    void deveLancarExcecaoAoMarcarComoDisponivelQuandoJaDisponivel() {
+    void deveLancarExcecaoAoDevolverLivroJaDisponivel() {
         Livro livro = new Livro(tituloValido, autorValido, anoPublicacaoValido, isbnValido);
 
-        assertThrows(IllegalArgumentException.class, livro::marcarComoDisponivel);
+        assertThrows(IllegalStateException.class, livro::devolver);
     }
 
     @Test
     void deveLancarExcecaoAoMarcarComoIndisponivelQuandoJaIndisponivel() {
         Livro livro = new Livro(tituloValido, autorValido, anoPublicacaoValido, isbnValido);
 
-        livro.marcarComoIndisponivel();
+        livro.emprestar();
 
-        assertThrows(IllegalArgumentException.class, livro::marcarComoIndisponivel);
+        assertThrows(IllegalStateException.class, livro::emprestar);
     }
 
 }

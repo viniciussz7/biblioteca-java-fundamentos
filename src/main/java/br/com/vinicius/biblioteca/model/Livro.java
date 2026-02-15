@@ -3,7 +3,6 @@ package br.com.vinicius.biblioteca.model;
 import br.com.vinicius.biblioteca.utils.IsbnUtils;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.UUID;
 
 public final class Livro {
@@ -12,14 +11,15 @@ public final class Livro {
     private String autor;
     private int anoPublicacao;
     private final String isbn;
-    private boolean disponivel;
+    //private boolean disponivel;
+    private StatusLivro status;
 
     public Livro(String titulo, String autor, int anoPublicacao, String isbn) {
         String isbnNormalizado = IsbnUtils.normalizar(isbn);
 
+        IsbnUtils.validar(isbnNormalizado);
         validarTitulo(titulo);
         validarAutor(autor);
-        validarIsbn(isbnNormalizado);
         validarAnoPublicacao(anoPublicacao);
 
         this.titulo = titulo;
@@ -27,7 +27,7 @@ public final class Livro {
         this.anoPublicacao = anoPublicacao;
         this.isbn = isbnNormalizado;
         this.id = UUID.randomUUID();
-        this.disponivel = true;
+        this.status = StatusLivro.DISPONIVEL;
     }
 
     //----- Métodos de dominio -------
@@ -46,18 +46,19 @@ public final class Livro {
         this.anoPublicacao = anoPublicacao;
     }
 
-    public void marcarComoDisponivel() {
-        if (this.disponivel) {
-            throw new IllegalArgumentException("Livro já está disponível.");
+    public void emprestar() {
+        if (this.status == StatusLivro.EMPRESTADO) {
+            throw new IllegalStateException("Livro já está emprestado.");
         }
-        this.disponivel = true;
+        this.status = StatusLivro.EMPRESTADO;
+
     }
 
-    public void marcarComoIndisponivel() {
-        if (!this.disponivel) {
-            throw new IllegalArgumentException("Livro já está indisponível.");
+    public void devolver() {
+        if (this.status == StatusLivro.DISPONIVEL) {
+            throw new IllegalStateException("Livro já está disponível.");
         }
-        this.disponivel = false;
+        this.status = StatusLivro.DISPONIVEL;
     }
 
     //----- Métodos de validação
@@ -69,14 +70,6 @@ public final class Livro {
     private void validarAutor(String autor) {
         if (autor == null || autor.isBlank())
             throw new IllegalArgumentException("Autor do livro vazio ou nulo.");
-    }
-
-    private void validarIsbn(String isbn) {
-        if (isbn == null || isbn.isBlank())
-            throw new IllegalArgumentException("isbn do livro vazio ou nulo.");
-        if (!isbn.matches("\\d{13}")) {
-            throw new IllegalArgumentException("ISBN deve conter exatamente 13 dígitos numéricos.");
-        }
     }
 
     private void validarAnoPublicacao(int anoPublicacao) {
@@ -101,8 +94,8 @@ public final class Livro {
         return isbn;
     }
 
-    public boolean isDisponivel() {
-        return disponivel;
+    public StatusLivro getStatus() {
+        return status;
     }
 
     public UUID getId() {

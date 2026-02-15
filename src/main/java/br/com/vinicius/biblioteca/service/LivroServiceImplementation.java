@@ -60,13 +60,13 @@ public class LivroServiceImplementation implements LivroService {
     }
 
     @Override
-    public void marcarComoDisponivel(String isbn) {
-        obterLivroOuLancarExcecao(isbn).marcarComoDisponivel();
+    public void devolver(String isbn) {
+        obterLivroOuLancarExcecao(isbn).devolver();
     }
 
     @Override
-    public void marcarComoIndisponivel(String isbn) {
-        obterLivroOuLancarExcecao(isbn).marcarComoIndisponivel();
+    public void emprestar(String isbn) {
+        obterLivroOuLancarExcecao(isbn).emprestar();
     }
 
     private Livro obterLivroOuLancarExcecao(String isbn) {

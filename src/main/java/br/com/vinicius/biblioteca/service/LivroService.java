@@ -12,6 +12,6 @@ public interface LivroService {
     void alterarTitulo(String isbn, String novoTitulo);
     void alterarAutor(String isbn, String novoAutor);
     void alterarAnoPublicacao(String isbn, int novoAno);
-    void marcarComoDisponivel(String isbn);
-    void marcarComoIndisponivel(String isbn);
+    void devolver(String isbn);
+    void emprestar(String isbn);
 }

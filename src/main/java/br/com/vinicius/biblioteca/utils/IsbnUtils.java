@@ -11,4 +11,12 @@ public final class IsbnUtils {
         return isbn.replaceAll("[^0-9]","");
     }
 
+    public static void validar(String isbn) {
+        if (isbn == null || isbn.isBlank())
+            throw new IllegalArgumentException("isbn do livro vazio ou nulo.");
+        if (!isbn.matches("\\d{13}")) {
+            throw new IllegalArgumentException("ISBN deve conter exatamente 13 dígitos numéricos.");
+        }
+    }
+
 }
