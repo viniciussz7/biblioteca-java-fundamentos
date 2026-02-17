@@ -34,7 +34,7 @@ public class EmprestimoServiceImplementation implements EmprestimoService{
         }
 
         livro.emprestar();
-        Emprestimo emprestimo = new Emprestimo(isbnNormalizado, nomeUsuario.toLowerCase());
+        Emprestimo emprestimo = new Emprestimo(isbnNormalizado, nomeUsuario);
         emprestimoRepository.salvar(emprestimo);
     }
 
