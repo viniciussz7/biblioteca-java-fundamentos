@@ -38,7 +38,7 @@ public class EmprestimoRepositoryEmMemoria implements EmprestimoRepository{
     public List<Emprestimo> buscarEmprestimoPorUsuario(String nomeUsuario) {
         return emprestimos.values()
                 .stream()
-                .filter(e -> e.getNomeUsuario().toLowerCase().equals(nomeUsuario))
+                .filter(e -> e.getNomeUsuario().equalsIgnoreCase(nomeUsuario))
                 .toList();
     }
 
