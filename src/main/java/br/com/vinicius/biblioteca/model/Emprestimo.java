@@ -63,4 +63,17 @@ public class Emprestimo {
     public StatusEmprestimo getStatus() {
         return status;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Emprestimo that = (Emprestimo) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
