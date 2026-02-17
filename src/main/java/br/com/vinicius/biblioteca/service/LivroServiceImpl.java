@@ -5,11 +5,11 @@ import br.com.vinicius.biblioteca.repository.LivroRepository;
 
 import java.util.List;
 
-public class LivroServiceImplementation implements LivroService {
+public class LivroServiceImpl implements LivroService {
 
     private final LivroRepository repository;
 
-    public LivroServiceImplementation(LivroRepository repository) {
+    public LivroServiceImpl(LivroRepository repository) {
         this.repository = repository;
     }
 

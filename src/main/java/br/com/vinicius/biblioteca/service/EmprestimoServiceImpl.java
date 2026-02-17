@@ -12,11 +12,11 @@ import br.com.vinicius.biblioteca.utils.IsbnUtils;
 import java.util.List;
 import java.util.Optional;
 
-public class EmprestimoServiceImplementation implements EmprestimoService{
+public class EmprestimoServiceImpl implements EmprestimoService{
     private final EmprestimoRepository emprestimoRepository;
     private final LivroRepository livroRepository;
 
-    public EmprestimoServiceImplementation(EmprestimoRepository emprestimoRepository, LivroRepository livroRepository) {
+    public EmprestimoServiceImpl(EmprestimoRepository emprestimoRepository, LivroRepository livroRepository) {
         this.emprestimoRepository = emprestimoRepository;
         this.livroRepository = livroRepository;
     }
@@ -41,12 +41,12 @@ public class EmprestimoServiceImplementation implements EmprestimoService{
     @Override
     public void registrarDevolucao(String isbn) {
         String isbnNormalizado = IsbnUtils.normalizar(isbn);
-        Emprestimo emprestimo = emprestimoRepository.buscarEmprestimoAtivoPorIsbn(isbnNormalizado)
-                .orElseThrow(() ->
-                        new LivroNaoEmprestadoException("Livro ja está disponível!"));
         Livro livro = livroRepository.buscarPorIsbn(isbnNormalizado)
                 .orElseThrow(() ->
                         new LivroNaoEncontradoException("Livro não encontrado."));
+        Emprestimo emprestimo = emprestimoRepository.buscarEmprestimoAtivoPorIsbn(isbnNormalizado)
+                .orElseThrow(() ->
+                        new LivroNaoEmprestadoException("Livro ja está disponível!"));
         emprestimo.finalizar();
         livro.devolver();
     }

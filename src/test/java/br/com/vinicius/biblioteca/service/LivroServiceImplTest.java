@@ -8,17 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LivroServiceImplementationTest {
+public class LivroServiceImplTest {
 
     private LivroRepositoryEmMemoria repositoryEmMemoria;
-    private LivroServiceImplementation livroServiceImplementation;
+    private LivroServiceImpl livroServiceImpl;
 
     private Livro livroValido;
 
     @BeforeEach
     void setUp() {
         repositoryEmMemoria = new LivroRepositoryEmMemoria();
-        livroServiceImplementation = new LivroServiceImplementation(repositoryEmMemoria);
+        livroServiceImpl = new LivroServiceImpl(repositoryEmMemoria);
 
         livroValido = new Livro(
                 "Clean Code",
@@ -30,22 +30,22 @@ public class LivroServiceImplementationTest {
 
     @Test
     void deveCadastrarLivroComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
-        Livro livroEncontrado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.cadastrarLivro(livroValido);
+        Livro livroEncontrado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertNotNull(livroEncontrado);
     }
 
     @Test
     void deveLancarExcecaoAoCadastrarLivroNulo() {
         assertThrows(IllegalArgumentException.class, () ->
-                livroServiceImplementation.cadastrarLivro(null)
+                livroServiceImpl.cadastrarLivro(null)
         );
-        assertTrue(livroServiceImplementation.listarTodos().isEmpty());
+        assertTrue(livroServiceImpl.listarTodos().isEmpty());
     }
 
     @Test
     void deveLancarExcecaoAoCadastrarLivroComIsbnDuplicado() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         Livro outroLivroValidoComMesmoIsbn = new Livro(
                 "Clean Code 2.0",
                 "Robert C. Martin",
@@ -54,15 +54,15 @@ public class LivroServiceImplementationTest {
         );
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.cadastrarLivro(outroLivroValidoComMesmoIsbn);
+           livroServiceImpl.cadastrarLivro(outroLivroValidoComMesmoIsbn);
         });
-        assertEquals(1, livroServiceImplementation.listarTodos().size());
+        assertEquals(1, livroServiceImpl.listarTodos().size());
     }
 
     @Test
     void deveBuscarLivroPorIsbn() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
-        Livro livroEncontrado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.cadastrarLivro(livroValido);
+        Livro livroEncontrado = livroServiceImpl.buscarPorIsbn("9780132350884");
 
         assertNotNull(livroEncontrado);
         assertEquals("9780132350884", livroEncontrado.getIsbn());
@@ -73,14 +73,14 @@ public class LivroServiceImplementationTest {
         String isbnInexistente = "0000000000000";
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.buscarPorIsbn(isbnInexistente);
+           livroServiceImpl.buscarPorIsbn(isbnInexistente);
         });
     }
 
     @Test
     void deveRetornarListaVaziaQuandoNaoHaLivros() {
 
-        var livros = livroServiceImplementation.listarTodos();
+        var livros = livroServiceImpl.listarTodos();
 
         assertNotNull(livros);
         assertTrue(livros.isEmpty());
@@ -103,10 +103,10 @@ public class LivroServiceImplementationTest {
                 "9780134685991"
         );
 
-        livroServiceImplementation.cadastrarLivro(livro1);
-        livroServiceImplementation.cadastrarLivro(livro2);
+        livroServiceImpl.cadastrarLivro(livro1);
+        livroServiceImpl.cadastrarLivro(livro2);
 
-        var livros = livroServiceImplementation.listarTodos();
+        var livros = livroServiceImpl.listarTodos();
 
         assertEquals(2, livros.size());
         assertTrue(livros.contains(livro1));
@@ -115,13 +115,13 @@ public class LivroServiceImplementationTest {
 
     @Test
     void deveRemoverLivroComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
-        Livro livroEncontrado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.cadastrarLivro(livroValido);
+        Livro livroEncontrado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertNotNull(livroEncontrado);
-        livroServiceImplementation.removerLivro("9780132350884");
-        assertTrue(livroServiceImplementation.listarTodos().isEmpty());
+        livroServiceImpl.removerLivro("9780132350884");
+        assertTrue(livroServiceImpl.listarTodos().isEmpty());
         assertThrows(IllegalArgumentException.class, () ->
-                livroServiceImplementation.buscarPorIsbn("9780132350884")
+                livroServiceImpl.buscarPorIsbn("9780132350884")
         );
     }
 
@@ -130,16 +130,16 @@ public class LivroServiceImplementationTest {
         String isbnInexistente = "0000000000000";
 
         assertThrows(IllegalArgumentException.class, () -> {
-            livroServiceImplementation.removerLivro(isbnInexistente);
+            livroServiceImpl.removerLivro(isbnInexistente);
         });
     }
 
     @Test
     void deveAlterarTituloComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         String novoTitulo = "Clean Code 2.0";
-        livroServiceImplementation.alterarTitulo("9780132350884", novoTitulo);
-        Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.alterarTitulo("9780132350884", novoTitulo);
+        Livro livroAtualizado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertEquals(novoTitulo, livroAtualizado.getTitulo());
     }
 
@@ -149,31 +149,31 @@ public class LivroServiceImplementationTest {
         String novoTitulo = "Clean Code 2.0";
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.alterarTitulo(isbnInexistente, novoTitulo);
+           livroServiceImpl.alterarTitulo(isbnInexistente, novoTitulo);
         });
     }
 
     @Test
     void deveLancarExcecaoAoAlterarTituloParaValorInvalido() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         String tituloVazio = "";
         String tituloNulo = null;
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.alterarTitulo("9780132350884", tituloVazio);
+           livroServiceImpl.alterarTitulo("9780132350884", tituloVazio);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.alterarTitulo("9780132350884", tituloNulo);
+           livroServiceImpl.alterarTitulo("9780132350884", tituloNulo);
         });
     }
 
     @Test
     void deveAlterarAutorComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         String novoAutor = "Bob Uncle";
-        livroServiceImplementation.alterarAutor("9780132350884", novoAutor);
-        Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.alterarAutor("9780132350884", novoAutor);
+        Livro livroAtualizado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertEquals(novoAutor, livroAtualizado.getAutor());
     }
 
@@ -183,31 +183,31 @@ public class LivroServiceImplementationTest {
         String novoAutor = "Bob Uncle";
 
         assertThrows(IllegalArgumentException.class, () -> {
-            livroServiceImplementation.alterarAutor(isbnInexistente, novoAutor);
+            livroServiceImpl.alterarAutor(isbnInexistente, novoAutor);
         });
     }
 
     @Test
     void deveLancarExcecaoAoAlterarAutorParaValorInvalido() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         String autorVazio = "";
         String autorNulo = null;
 
         assertThrows(IllegalArgumentException.class, () -> {
-            livroServiceImplementation.alterarAutor("9780132350884", autorVazio);
+            livroServiceImpl.alterarAutor("9780132350884", autorVazio);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            livroServiceImplementation.alterarAutor("9780132350884", autorNulo);
+            livroServiceImpl.alterarAutor("9780132350884", autorNulo);
         });
     }
 
     @Test
     void deveAlterarAnoPublicacaoComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         int novoAno = 2020;
-        livroServiceImplementation.alterarAnoPublicacao("9780132350884", novoAno);
-        Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.alterarAnoPublicacao("9780132350884", novoAno);
+        Livro livroAtualizado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertEquals(novoAno, livroAtualizado.getAnoPublicacao());
     }
 
@@ -217,63 +217,63 @@ public class LivroServiceImplementationTest {
         int novoAno = 2020;
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.alterarAnoPublicacao(isbnInexistente, novoAno);
+           livroServiceImpl.alterarAnoPublicacao(isbnInexistente, novoAno);
         });
     }
 
     @Test
     void deveLancarExcecaoAoAlterarAnoParaValorInvalido() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         int anoNegativo = -100;
         int anoMaiorQueAtual = 2050;
 
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.alterarAnoPublicacao("9780132350884", anoNegativo);
+           livroServiceImpl.alterarAnoPublicacao("9780132350884", anoNegativo);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            livroServiceImplementation.alterarAnoPublicacao("9780132350884", anoMaiorQueAtual);
+            livroServiceImpl.alterarAnoPublicacao("9780132350884", anoMaiorQueAtual);
         });
     }
 
     @Test
     void deveEmprestarComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
-        livroServiceImplementation.emprestar("9780132350884");
-        Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.cadastrarLivro(livroValido);
+        livroServiceImpl.emprestar("9780132350884");
+        Livro livroAtualizado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertEquals(StatusLivro.EMPRESTADO, livroAtualizado.getStatus());
     }
 
     @Test
     void deveDevolverComSucesso() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
-        livroServiceImplementation.emprestar("9780132350884");
-        livroServiceImplementation.devolver("9780132350884");
-        Livro livroAtualizado = livroServiceImplementation.buscarPorIsbn("9780132350884");
+        livroServiceImpl.cadastrarLivro(livroValido);
+        livroServiceImpl.emprestar("9780132350884");
+        livroServiceImpl.devolver("9780132350884");
+        Livro livroAtualizado = livroServiceImpl.buscarPorIsbn("9780132350884");
         assertEquals(StatusLivro.DISPONIVEL, livroAtualizado.getStatus());
     }
 
     @Test
     void deveLancarExcecaoAoDevolverQuandoJaDisponivel() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
+        livroServiceImpl.cadastrarLivro(livroValido);
         assertThrows(IllegalStateException.class, () -> {
-           livroServiceImplementation.devolver("9780132350884");
+           livroServiceImpl.devolver("9780132350884");
         });
     }
 
     @Test
     void deveLancarExcecaoAoEmprestarQuandoJaIndisponivel() {
-        livroServiceImplementation.cadastrarLivro(livroValido);
-        livroServiceImplementation.emprestar("9780132350884");
+        livroServiceImpl.cadastrarLivro(livroValido);
+        livroServiceImpl.emprestar("9780132350884");
         assertThrows(IllegalStateException.class, () -> {
-           livroServiceImplementation.emprestar("9780132350884");
+           livroServiceImpl.emprestar("9780132350884");
         });
     }
 
     @Test
     void deveLancarExcecaoAoAlterarDisponibilidadeDeLivroInexistente() {
         assertThrows(IllegalArgumentException.class, () -> {
-           livroServiceImplementation.emprestar("9780132350884");
+           livroServiceImpl.emprestar("9780132350884");
         });
     }
 
