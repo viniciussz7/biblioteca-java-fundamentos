@@ -137,4 +137,54 @@ public class EmprestimoServiceImplTest {
             emprestimoService.registrarDevolucao("9780132350884");
         });
     }
+
+    @Test
+    void deveBuscarEmprestimosAtivos() {
+        Livro livro = new Livro(
+                "Clean Code",
+                "Robert C. Martin",
+                2008,
+                "9780132350884"
+        );
+        Livro livro2 = new Livro(
+                "Effective Java",
+                "Joshua Bloch",
+                2018,
+                "9780134685991"
+        );
+        livroRepository.salvar(livro);
+        livroRepository.salvar(livro2);
+        emprestimoService.registrarEmprestimo("9780132350884", "Lua");
+        emprestimoService.registrarEmprestimo("9780134685991", "Vinícius");
+
+        List<Emprestimo> emprestimosAtivos = emprestimoService.buscarEmprestimosAtivos();
+
+        assertEquals(2, emprestimosAtivos.size());
+        assertEquals(StatusEmprestimo.ATIVO, emprestimosAtivos.get(0).getStatus());
+        assertEquals(StatusEmprestimo.ATIVO, emprestimosAtivos.get(1).getStatus());
+    }
+
+    @Test
+    void deveBuscarEmprestimosPorUsuario() {
+        Livro livro = new Livro(
+                "Clean Code",
+                "Robert C. Martin",
+                2008,
+                "9780132350884"
+        );
+        Livro livro2 = new Livro(
+                "Effective Java",
+                "Joshua Bloch",
+                2018,
+                "9780134685991"
+        );
+        livroRepository.salvar(livro);
+        livroRepository.salvar(livro2);
+        emprestimoService.registrarEmprestimo("9780132350884", "Lua");
+        emprestimoService.registrarEmprestimo("9780134685991", "vinícius");
+
+        List<Emprestimo> emprestimosDoUsuario = emprestimoService.buscarEmprestimosPorUsuario("Vinícius");
+
+        assertEquals(1, emprestimosDoUsuario.size());
+    }
 }

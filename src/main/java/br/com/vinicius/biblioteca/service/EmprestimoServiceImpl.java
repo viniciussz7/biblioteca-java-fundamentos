@@ -70,6 +70,6 @@ public class EmprestimoServiceImpl implements EmprestimoService{
 
     @Override
     public List<Emprestimo> buscarEmprestimosPorUsuario(String nomeUsuario) {
-        return emprestimoRepository.buscarEmprestimoPorUsuario(nomeUsuario.toLowerCase());
+        return emprestimoRepository.buscarEmprestimoPorUsuario(nomeUsuario);
     }
 }
